@@ -48,7 +48,7 @@ export default function CapitalFlow() {
 
       <div className="col-in mt-10">
         <FlowDiagram />
-        <p className="mt-3 text-sm text-faint">The mark leaves the tweet, passes the desk, then goes to worth paying or watch.</p>
+        <p className="mt-3 text-sm text-faint">Pump.fun, then the fee is claimed, then it is sent to the X user.</p>
       </div>
 
       <ol className="cols mt-10 grid gap-px overflow-hidden rounded-[28px] border border-line bg-line sm:grid-cols-2">
