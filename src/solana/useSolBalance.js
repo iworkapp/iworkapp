@@ -1,32 +1,37 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
+import { ENDPOINT } from './cluster'
 
-export function useSolBalance() {
-  const { connection } = useConnection()
-  const { publicKey, connected } = useWallet()
-  const address = publicKey?.toBase58() ?? ''
+const connection = new Connection(ENDPOINT, 'confirmed')
+
+export function useSolBalance(address) {
   const [snapshot, setSnapshot] = useState({ address: '', balance: null })
 
   useEffect(() => {
-    if (!connected || !publicKey) return undefined
+    if (!address) return undefined
 
     let active = true
-    const nextAddress = publicKey.toBase58()
+    let publicKey
+    try {
+      publicKey = new PublicKey(address)
+    } catch {
+      return undefined
+    }
+
     connection
       .getBalance(publicKey)
       .then((lamports) => {
-        if (active) setSnapshot({ address: nextAddress, balance: lamports / LAMPORTS_PER_SOL })
+        if (active) setSnapshot({ address, balance: lamports / LAMPORTS_PER_SOL })
       })
       .catch(() => {
-        if (active) setSnapshot({ address: nextAddress, balance: null })
+        if (active) setSnapshot({ address, balance: null })
       })
 
     return () => {
       active = false
     }
-  }, [connection, connected, publicKey])
+  }, [address])
 
-  if (!connected || snapshot.address !== address) return null
+  if (!address || snapshot.address !== address) return null
   return snapshot.balance
 }

@@ -1,4 +1,3 @@
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
@@ -6,6 +5,7 @@ import { formatSol, shortenAddress, tweetUrl } from '../lib/format'
 import { TWEET_PAY } from '../lib/tweetReview'
 import { usePageTitle } from '../lib/usePageTitle'
 import { isSolanaAddress } from '../solana/address'
+import { useSolanaAccount } from '../solana/useSolanaAccount'
 
 const reasons = {
   'missing-tag': 'Include $iwork in the tweet.',
@@ -25,7 +25,7 @@ const rules = [
 
 export default function Tweet() {
   const { tweets, claimTweet } = useBoard()
-  const { publicKey } = useWallet()
+  const { address: walletAddress } = useSolanaAccount()
   const [url, setUrl] = useState('')
   const [text, setText] = useState('')
   const [address, setAddress] = useState('')
@@ -89,8 +89,8 @@ export default function Tweet() {
               placeholder="Wallet that should be paid"
             />
           </label>
-          {publicKey ? (
-            <button type="button" className="text-sm text-marigold" onClick={() => setAddress(publicKey.toBase58())}>
+          {walletAddress ? (
+            <button type="button" className="text-sm text-marigold" onClick={() => setAddress(walletAddress)}>
               Use connected wallet
             </button>
           ) : null}

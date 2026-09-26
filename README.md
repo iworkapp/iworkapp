@@ -7,7 +7,7 @@ npm install
 npm run dev
 ```
 
-Connect Phantom or Solflare to read a mainnet balance. Tweet claims, review choices, and payouts are saved in this browser.
+Connect a Solana wallet through Privy, and link an X account from the same login. Set `VITE_PRIVY_APP_ID` in `.env` and restart the dev server. The wallet reads a mainnet balance. Tweet claims, review choices, and payouts are saved in this browser.
 
 Tweet with `$iwork` at `/tweet`. A post that passes the desk check waits on watch. An admin marks it worth paying, keeps it on watch, or skips it. Worth paying is what shows on the public board.
 
