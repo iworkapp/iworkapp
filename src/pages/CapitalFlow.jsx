@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import FlowDiagram from '../components/FlowDiagram.jsx'
 import PageHeader from '../components/PageHeader.jsx'
+import TreasuryCard from '../components/TreasuryCard.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
 import { usePageTitle } from '../lib/usePageTitle'
 
@@ -49,6 +50,9 @@ export default function CapitalFlow() {
       <div className="col-in mt-10">
         <FlowDiagram />
         <p className="mt-3 text-sm text-faint">Pump.fun, then the fee is claimed, then it is sent to the X user.</p>
+        <div className="mt-6">
+          <TreasuryCard />
+        </div>
       </div>
 
       <ol className="cols mt-10 grid gap-px overflow-hidden rounded-[28px] border border-line bg-line sm:grid-cols-2">

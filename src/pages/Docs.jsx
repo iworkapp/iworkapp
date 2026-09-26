@@ -56,6 +56,14 @@ const sections = [
     ],
   },
   {
+    id: 'treasury',
+    title: 'Treasury',
+    paragraphs: [
+      'The dev wallet workX6RaeQCMZq82tjY9ceceqSrQMtgFPfcRgCGxU6U is the treasury. The desk reads its SOL balance from Solana mainnet.',
+      'That balance is what later pays an X user. The payout record stays off-chain until volume is high enough for an on-chain send.',
+    ],
+  },
+  {
     id: 'wallet',
     title: 'Wallet and X',
     paragraphs: [

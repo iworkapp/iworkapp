@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
+import TreasuryCard from '../components/TreasuryCard.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
 import { adminKeyConfigured, lockAdmin, readAdminSession, unlockAdmin } from '../lib/admin'
 import { shortenAddress } from '../lib/format'
@@ -99,7 +100,11 @@ function Desk({ onLock }) {
         }
       />
 
-      <dl className="col-in mt-10 grid grid-cols-3 gap-4 border-y border-line py-6">
+      <div className="col-in mt-10">
+        <TreasuryCard />
+      </div>
+
+      <dl className="col-in mt-6 grid grid-cols-3 gap-4 border-y border-line py-6">
         <Stat label="Worth paying" value={posts.filter((tweet) => tweet.review === 'paid').length} />
         <Stat label="Watch" value={posts.filter((tweet) => tweet.review === 'watch').length} />
         <Stat label="Skip" value={posts.filter((tweet) => tweet.review === 'skip').length} />

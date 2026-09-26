@@ -1,4 +1,2 @@
-import { clusterApiUrl } from '@solana/web3.js'
-
 export const CLUSTER_LABEL = 'Mainnet'
-export const ENDPOINT = clusterApiUrl('mainnet-beta')
+export const ENDPOINT = 'https://solana-rpc.publicnode.com'

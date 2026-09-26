@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
+import TreasuryCard from '../components/TreasuryCard.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
 import { shortenAddress } from '../lib/format'
 import { usePageTitle } from '../lib/usePageTitle'
@@ -29,6 +30,10 @@ export default function Payouts() {
         title="Who got paid"
         lede="These are the posts an admin marked worth paying. The SOL amount is set when a dev reviews the post."
       />
+
+      <div className="col-in mt-8">
+        <TreasuryCard />
+      </div>
 
       <div className="col-in mt-8 flex flex-wrap gap-2">
         {filters.map((item) => (

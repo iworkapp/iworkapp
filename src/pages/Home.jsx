@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import PayoutTape from '../components/PayoutTape.jsx'
+import TreasuryCard from '../components/TreasuryCard.jsx'
 import TweetCard from '../components/TweetCard.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
 import { usePageTitle } from '../lib/usePageTitle'
@@ -68,6 +69,7 @@ export default function Home() {
               <dd className="nums mt-2 font-serif text-3xl">{payouts.length}</dd>
             </div>
           </dl>
+          <TreasuryCard compact />
         </div>
 
         {featured ? (
