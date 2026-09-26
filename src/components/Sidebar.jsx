@@ -32,6 +32,25 @@ const links = [
     ),
   },
   {
+    to: '/capital-flow',
+    label: 'Capital flow',
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h6l2-4 3 8 2-4h3" />
+      </svg>
+    ),
+  },
+  {
+    to: '/docs',
+    label: 'Docs',
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 4.5h8.5L19 8v11.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z" />
+        <path strokeLinecap="round" d="M15 4.5V8h4M8.5 12.5h7M8.5 16h5" />
+      </svg>
+    ),
+  },
+  {
     to: '/tweet',
     label: 'Tweet to get paid',
     icon: (
@@ -77,7 +96,7 @@ export default function Sidebar({ collapsed, onToggle }) {
           </span>
         </div>
 
-        <nav className={`mt-8 flex flex-1 flex-col gap-1 overflow-hidden ${collapsed ? 'px-2' : 'px-3'}`} aria-label="Primary">
+        <nav className={`mt-8 flex flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto ${collapsed ? 'px-2' : 'px-3'}`} aria-label="Primary">
           {links.map((link) => (
             <NavLink
               key={link.to}

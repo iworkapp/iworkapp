@@ -25,6 +25,12 @@ export default function Footer() {
             <Link to="/tweet" className="text-mute hover:text-cream">
               Tweet to get paid
             </Link>
+            <Link to="/capital-flow" className="text-mute hover:text-cream">
+              Capital flow
+            </Link>
+            <Link to="/docs" className="text-mute hover:text-cream">
+              Docs
+            </Link>
           </div>
         </div>
         <div className="text-sm">
