@@ -32,7 +32,7 @@ export default function TreasuryCard({ compact = false }) {
         </a>
       </div>
       <p className="mt-3 max-w-xl text-sm leading-6 text-mute">
-        Dev wallet on mainnet. This balance is what later pays an X user. The desk reads it here, and the payout record stays off-chain.
+        Treasury wallet on mainnet. This balance is what later pays an X user. The desk reads it here, and the payout record stays off-chain.
       </p>
     </article>
   )

@@ -36,7 +36,7 @@ export default function Footer() {
         <div className="text-sm">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Chain</p>
           <p className="mt-3 leading-6 text-mute">
-            The treasury balance is read from a Solana mainnet dev wallet. Posts, review choices, and payouts stay in this browser.
+            The treasury balance is read from the Solana mainnet treasury wallet. Posts, review choices, and payouts stay in this browser.
           </p>
           {hasLocal ? (
             <button type="button" className="mt-3 text-marigold hover:text-marigold-2" onClick={reset}>
