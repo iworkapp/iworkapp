@@ -4,6 +4,7 @@ import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { sampleTweets } from '../src/data.js'
 import { readStatus, reviewText } from '../src/lib/tweetReview.js'
 import { isSolanaAddress, isSolanaSignature } from './base58.js'
 import { openStore } from './store.js'
@@ -18,6 +19,13 @@ const bearer = process.env.X_BEARER_TOKEN || ''
 const pollMinutes = Math.max(5, Number(process.env.X_POLL_MINUTES || 15))
 
 const store = await openStore(dataDir)
+
+const sampleLines = [
+  ...sampleTweets.map((tweet) => ({ text: tweet.text })),
+  { text: 'Wrote the payroll thread like a desk tool, not a brand account. Eight short posts, one fact each. $iwork' },
+  { text: 'Original take: $iwork pays a real post, not a raid. One wallet, one tweet, no copied line.' },
+]
+const reviewAgainst = () => [...sampleLines, ...store.tweets()]
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -153,7 +161,7 @@ async function handleClaim(req, res) {
   }
   if (!handle) return send(res, 400, { ok: false, reason: 'bad-link' })
 
-  const review = reviewText(text, status, store.tweets())
+  const review = reviewText(text, status, reviewAgainst())
   if (!review.ok) return send(res, 400, review)
 
   const tweet = await store.add({
@@ -294,7 +302,7 @@ async function pollX() {
     for (const found of tweets.reverse()) {
       if (!found.username || store.findByStatus(found.id)) continue
       const status = { id: found.id, handle: `@${found.username}`, url: `https://x.com/${found.username}/status/${found.id}` }
-      if (!reviewText(found.text, status, store.tweets()).ok) continue
+      if (!reviewText(found.text, status, reviewAgainst()).ok) continue
       await store.add({
         statusId: found.id,
         handle: status.handle,
