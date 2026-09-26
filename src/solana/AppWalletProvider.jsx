@@ -3,6 +3,7 @@ import { toSolanaWalletConnectors, useWallets } from '@privy-io/react-auth/solan
 import { useMemo } from 'react'
 import { SolanaAccountContext, solanaAddressFromUser, xHandleFromUser } from './useSolanaAccount'
 
+const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || 'cmuhz2y8c00ba0blcsvics918'
 const solanaConnectors = toSolanaWalletConnectors()
 
 const privyConfig = {
@@ -24,12 +25,8 @@ const privyConfig = {
 }
 
 export function AppWalletProvider({ children }) {
-  const appId = import.meta.env.VITE_PRIVY_APP_ID
-
-  if (!appId) return children
-
   return (
-    <PrivyProvider appId={appId} config={privyConfig}>
+    <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <PrivyAccountBridge>{children}</PrivyAccountBridge>
     </PrivyProvider>
   )

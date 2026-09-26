@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatBalance, shortenAddress } from '../lib/format'
 import { CLUSTER_LABEL } from '../solana/cluster'
 import { useSolanaAccount } from '../solana/useSolanaAccount'
@@ -18,23 +18,18 @@ export default function ConnectButton({ compact = false }) {
   const account = useSolanaAccount()
   const balance = useSolBalance(account.address)
   const [accountOpen, setAccountOpen] = useState(false)
-  const [setupOpen, setSetupOpen] = useState(false)
   const [copied, setCopied] = useState(false)
-  const titleId = useId()
   const balanceLabel = formatBalance(balance)
   const label = account.address ? shortenAddress(account.address) : account.xHandle || 'Account'
 
   useEffect(() => {
-    if (!accountOpen && !setupOpen) return undefined
+    if (!accountOpen) return undefined
     const onKey = (event) => {
-      if (event.key === 'Escape') {
-        setAccountOpen(false)
-        setSetupOpen(false)
-      }
+      if (event.key === 'Escape') setAccountOpen(false)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [accountOpen, setupOpen])
+  }, [accountOpen])
 
   const copyAddress = async () => {
     if (!account.address) return
@@ -122,36 +117,13 @@ export default function ConnectButton({ compact = false }) {
           className={buttonClass}
           aria-label={!account.ready ? 'Connecting wallet' : 'Connect wallet'}
           title={compact ? 'Connect wallet' : undefined}
-          disabled={account.configured && !account.ready}
-          onClick={() => {
-            if (!account.configured) {
-              setSetupOpen(true)
-              return
-            }
-            account.login()
-          }}
+          disabled={!account.ready}
+          onClick={() => account.login()}
         >
           <WalletIcon />
-          {compact ? null : <span>{account.configured && !account.ready ? 'Connecting…' : 'Connect wallet'}</span>}
+          {compact ? null : <span>{account.ready ? 'Connect wallet' : 'Connecting…'}</span>}
         </button>
       </div>
-      {setupOpen ? (
-        <div className="fixed inset-0 z-50 grid place-items-center p-4">
-          <button type="button" aria-label="Close" className="absolute inset-0 bg-black/70" onClick={() => setSetupOpen(false)} />
-          <div role="dialog" aria-modal="true" aria-labelledby={titleId} className="relative z-10 w-full max-w-md rounded-[28px] border border-line bg-panel p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Solana {CLUSTER_LABEL}</p>
-            <h2 id={titleId} className="mt-2 font-serif text-3xl tracking-tight">
-              Connect a wallet
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-mute">
-              Add the Privy app id to this desk, then restart it. The login stays Solana only, and X can be linked from the same account.
-            </p>
-            <button type="button" className="btn-primary mt-5" onClick={() => setSetupOpen(false)}>
-              Close
-            </button>
-          </div>
-        </div>
-      ) : null}
     </>
   )
 }
