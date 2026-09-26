@@ -18,18 +18,46 @@ export default function ConnectButton({ compact = false }) {
   const account = useSolanaAccount()
   const balance = useSolBalance(account.address)
   const [accountOpen, setAccountOpen] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [connectingId, setConnectingId] = useState('')
   const [copied, setCopied] = useState(false)
   const balanceLabel = formatBalance(balance)
   const label = account.address ? shortenAddress(account.address) : account.xHandle || 'Account'
 
   useEffect(() => {
-    if (!accountOpen) return undefined
+    if (!accountOpen && !pickerOpen) return undefined
     const onKey = (event) => {
-      if (event.key === 'Escape') setAccountOpen(false)
+      if (event.key !== 'Escape') return
+      setAccountOpen(false)
+      setPickerOpen(false)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [accountOpen])
+  }, [accountOpen, pickerOpen])
+
+  const openPicker = () => {
+    account.refreshWallets()
+    setAccountOpen(false)
+    setPickerOpen(true)
+  }
+
+  const connectPhantom = async () => {
+    account.refreshWallets()
+    if (!account.isInstalled('phantom')) {
+      openPicker()
+      return
+    }
+    setConnectingId('phantom')
+    await account.connect('phantom')
+    setConnectingId('')
+  }
+
+  const chooseWallet = async (id) => {
+    setConnectingId(id)
+    const connected = await account.connect(id)
+    setConnectingId('')
+    if (connected) setPickerOpen(false)
+  }
 
   const copyAddress = async () => {
     if (!account.address) return
@@ -46,9 +74,19 @@ export default function ConnectButton({ compact = false }) {
     ? 'grid h-11 w-11 place-items-center rounded-2xl border border-line text-cream transition hover:border-cream/30'
     : 'btn-ghost w-full justify-start px-3 py-2'
   const popoverClass = 'absolute bottom-0 left-full z-50 ml-3 w-72 rounded-2xl border border-line bg-panel p-3 shadow-2xl'
+  const picker = pickerOpen ? (
+    <WalletPicker
+      wallets={account.wallets}
+      connectingId={connectingId}
+      error={account.connectError}
+      onChoose={chooseWallet}
+      onClose={() => setPickerOpen(false)}
+    />
+  ) : null
 
-  if (account.authenticated) {
+  if (account.address || account.xHandle) {
     return (
+      <>
       <div className={`relative ${compact ? 'flex justify-center' : ''}`}>
         <button
           type="button"
@@ -75,7 +113,7 @@ export default function ConnectButton({ compact = false }) {
                 <p className="mt-1 text-sm text-mute">{balanceLabel != null ? `${balanceLabel} SOL` : 'Balance unavailable'}</p>
               </>
             ) : (
-              <button type="button" className="btn-ghost mt-3 w-full px-3 py-2" onClick={() => account.linkWallet()}>
+              <button type="button" className="btn-ghost mt-3 w-full px-3 py-2" onClick={openPicker}>
                 Connect Solana wallet
               </button>
             )}
@@ -106,6 +144,8 @@ export default function ConnectButton({ compact = false }) {
           </div>
         ) : null}
       </div>
+      {picker}
+      </>
     )
   }
 
@@ -115,15 +155,53 @@ export default function ConnectButton({ compact = false }) {
         <button
           type="button"
           className={buttonClass}
-          aria-label={!account.ready ? 'Connecting wallet' : 'Connect wallet'}
+          aria-label="Connect wallet"
           title={compact ? 'Connect wallet' : undefined}
-          disabled={!account.ready}
-          onClick={() => account.login()}
+          disabled={connectingId === 'phantom'}
+          onClick={connectPhantom}
         >
           <WalletIcon />
-          {compact ? null : <span>{account.ready ? 'Connect wallet' : 'Connecting…'}</span>}
+          {compact ? null : <span>{connectingId === 'phantom' ? 'Waiting for Phantom…' : 'Connect wallet'}</span>}
         </button>
+        {account.connectError && !pickerOpen ? <p className="mt-2 px-1 text-xs text-marigold">{account.connectError}</p> : null}
       </div>
+      {picker}
     </>
+  )
+}
+
+function WalletPicker({ wallets, connectingId, error, onChoose, onClose }) {
+  return (
+    <div className="fixed inset-0 z-[80] grid place-items-center bg-ink/70 p-4" onClick={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wallet-picker-title"
+        className="w-full max-w-sm rounded-3xl border border-line bg-panel p-4 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <p id="wallet-picker-title" className="font-serif text-2xl text-cream">
+          Select your wallet
+        </p>
+        <p className="mt-1 text-sm text-mute">Connect a Solana wallet. Phantom opens in the extension.</p>
+        <div className="mt-4 grid gap-2">
+          {wallets.map((wallet) => (
+            <button
+              key={wallet.id}
+              type="button"
+              className="flex items-center justify-between rounded-2xl border border-line bg-ink/40 px-4 py-3 text-left text-sm font-semibold text-cream transition hover:border-marigold"
+              disabled={Boolean(connectingId)}
+              onClick={() => onChoose(wallet.id)}
+            >
+              <span>{wallet.name}</span>
+              <span className="text-xs font-medium text-faint">
+                {connectingId === wallet.id ? 'Waiting…' : wallet.installed ? 'Installed' : 'Install'}
+              </span>
+            </button>
+          ))}
+        </div>
+        {error ? <p className="mt-3 text-sm text-marigold">{error}</p> : null}
+      </div>
+    </div>
   )
 }

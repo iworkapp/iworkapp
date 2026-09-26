@@ -6,7 +6,14 @@ export const SolanaAccountContext = createContext({
   authenticated: false,
   address: '',
   xHandle: '',
+  wallets: [],
+  connectError: '',
+  refreshWallets() {},
+  isInstalled() {
+    return false
+  },
   login() {},
+  connect() {},
   logout() {},
   linkX() {},
   linkWallet() {},
