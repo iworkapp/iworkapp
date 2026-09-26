@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import CoinAddress from '../components/CoinAddress.jsx'
 import FlowDiagram from '../components/FlowDiagram.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import TreasuryCard from '../components/TreasuryCard.jsx'
@@ -44,6 +45,7 @@ export default function CapitalFlow() {
 
       <div className="col-in mt-10">
         <FlowDiagram />
+        <CoinAddress className="mt-4" />
         <div className="mt-6">
           <TreasuryCard />
         </div>

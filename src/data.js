@@ -5,7 +5,7 @@ export const sampleTweets = [
   {
     id: 'sample-mio',
     handle: '@mio',
-    text: 'Wrote the payroll thread like a desk tool, not a brand account. Eight short posts, one fact each. $iwork',
+    text: 'Wrote the payroll thread like a desk tool. Eight short posts, one fact each. $iwork',
     address: '7nZq4u1bQeR9sT2kL8pYwH3cVdFm6aJxC5rUeNgK4sL2',
     createdAt: base - 3 * hour,
   },
@@ -19,7 +19,7 @@ export const sampleTweets = [
   {
     id: 'sample-ada',
     handle: '@ada',
-    text: 'Original take: $iwork pays a real post, not a raid. One wallet, one tweet, no copied line.',
+    text: 'Original take: $iwork pays for a real post. One wallet, one tweet, every line my own.',
     address: '2mQv8sL4pR7dH1cK9yT6bN3aXeUj5oZrYgBnCwF8kP',
     createdAt: base - 14 * hour,
   },

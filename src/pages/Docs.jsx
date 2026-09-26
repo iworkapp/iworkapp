@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader.jsx'
 import { usePageTitle } from '../lib/usePageTitle'
+import { COIN_ADDRESS } from '../solana/coin'
 import { TREASURY_ADDRESS } from '../solana/treasury'
 
 const sections = [
@@ -61,6 +62,7 @@ const sections = [
     paragraphs: [
       `The treasury wallet ${TREASURY_ADDRESS} holds the SOL. Its balance is read live from Solana mainnet.`,
       'Creator fees from the coin on Pump.fun are claimed into this wallet. That is where every reward comes from.',
+      ...(COIN_ADDRESS ? [`The coin contract address is ${COIN_ADDRESS}.`] : []),
     ],
   },
   {

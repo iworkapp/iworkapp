@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import CoinAddress from './CoinAddress.jsx'
 
 export default function Footer() {
   return (
@@ -33,6 +34,7 @@ export default function Footer() {
           <p className="mt-3 leading-6 text-mute">
             Payouts come from the treasury wallet on Solana mainnet. They are recorded off-chain first, and each sent payout links to its transaction.
           </p>
+          <CoinAddress className="mt-4" />
         </div>
       </div>
     </footer>

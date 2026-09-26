@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import CoinAddress from '../components/CoinAddress.jsx'
 import PayoutTape from '../components/PayoutTape.jsx'
 import TreasuryCard from '../components/TreasuryCard.jsx'
 import TweetCard from '../components/TweetCard.jsx'
@@ -72,6 +73,7 @@ export default function Home() {
             </div>
           </dl>
           <TreasuryCard compact />
+          <CoinAddress className="mt-3" />
         </div>
 
         {featured ? (
