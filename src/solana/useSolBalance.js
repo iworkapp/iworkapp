@@ -4,7 +4,7 @@ import { ENDPOINT } from './cluster'
 
 const connection = new Connection(ENDPOINT, 'confirmed')
 
-export function useSolBalance(address) {
+export function useSolBalance(address, refreshMs = 60_000) {
   const [snapshot, setSnapshot] = useState({ address: '', balance: null })
 
   useEffect(() => {
@@ -18,20 +18,25 @@ export function useSolBalance(address) {
       return undefined
     }
 
-    connection
-      .getBalance(publicKey)
-      .then((lamports) => {
-        if (active) setSnapshot({ address, balance: lamports / LAMPORTS_PER_SOL })
-      })
-      .catch(() => {
-        if (active) setSnapshot({ address, balance: null })
-      })
+    const read = () =>
+      connection
+        .getBalance(publicKey)
+        .then((lamports) => {
+          if (active) setSnapshot({ address, balance: lamports / LAMPORTS_PER_SOL })
+        })
+        .catch(() => {
+          if (active) setSnapshot((current) => (current.address === address ? current : { address, balance: null }))
+        })
 
+    read()
+    const timer = window.setInterval(read, refreshMs)
     return () => {
       active = false
+      window.clearInterval(timer)
     }
-  }, [address])
+  }, [address, refreshMs])
 
-  if (!address || snapshot.address !== address) return null
+  if (!address) return null
+  if (snapshot.address !== address) return undefined
   return snapshot.balance
 }

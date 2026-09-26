@@ -2,37 +2,39 @@ import { Link } from 'react-router-dom'
 import PayoutTape from '../components/PayoutTape.jsx'
 import TreasuryCard from '../components/TreasuryCard.jsx'
 import TweetCard from '../components/TweetCard.jsx'
-import { useBoard } from '../context/BoardContext.jsx'
+import { useBoard } from '../context/useBoard'
+import { formatSol, timeAgo } from '../lib/format'
 import { usePageTitle } from '../lib/usePageTitle'
 
 const steps = [
   {
     n: '01',
     title: 'Tweet with $iwork',
-    body: 'The post is the claim. It needs the tag, a real sentence, and a link to that status.',
+    body: 'Write an original post on X and include $iwork in it.',
   },
   {
     n: '02',
-    title: 'Desk checks the post',
-    body: 'A bot pattern, a copy, or a duplicate never enters the queue.',
+    title: 'Claim it here',
+    body: 'Paste the link and the Solana wallet that should be paid. The desk checks it against X.',
   },
   {
     n: '03',
-    title: 'Admin reviews it',
+    title: 'A dev reviews it',
     body: 'Worth paying puts it on the board. Watch holds it. Skip leaves it off.',
   },
   {
     n: '04',
-    title: 'The SOL is recorded',
-    body: 'A post marked worth paying shows up here. A dev sets the SOL on review.',
+    title: 'The SOL is set',
+    body: 'The dev sets the amount on review. It is paid from the treasury wallet.',
   },
 ]
 
 export default function Home() {
-  const { tweets, payouts } = useBoard()
+  const { tweets, showingSamples, paidCount, solRecorded } = useBoard()
   usePageTitle('')
-  const featured = [...tweets].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))[0]
-  const preview = [...tweets].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 3)
+  const featured = tweets[0]
+  const preview = tweets.slice(0, 3)
+
   return (
     <>
       <section className="cols mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:pt-20">
@@ -45,7 +47,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-8 text-mute">
-            Tweet with $iwork. An admin marks the post worth paying when it is original, unique, and not a bot.
+            Tweet with $iwork. A dev marks the post worth paying when it is original, unique, and written by a real person.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/tweet" className="btn-primary">
@@ -57,16 +59,16 @@ export default function Home() {
           </div>
           <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-6">
             <div>
-              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Posts</dt>
-              <dd className="nums mt-2 font-serif text-3xl">{tweets.length}</dd>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Paid posts</dt>
+              <dd className="nums mt-2 font-serif text-3xl">{paidCount}</dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">SOL set</dt>
+              <dd className="nums mt-2 font-serif text-3xl">{solRecorded ? formatSol(solRecorded).replace(' SOL', '') : '0'}</dd>
             </div>
             <div>
               <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Reward</dt>
-              <dd className="mt-2 font-serif text-3xl">Open</dd>
-            </div>
-            <div>
-              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Receipts</dt>
-              <dd className="nums mt-2 font-serif text-3xl">{payouts.length}</dd>
+              <dd className="mt-2 whitespace-nowrap font-serif text-3xl">On review</dd>
             </div>
           </dl>
           <TreasuryCard compact />
@@ -74,50 +76,47 @@ export default function Home() {
 
         {featured ? (
           <div className="relative">
-            <div
-              className="absolute -top-3 right-6 z-10 grid h-16 w-16 rotate-12 place-items-center rounded-full border border-dashed border-marigold text-[10px] font-semibold uppercase tracking-[0.14em] text-marigold"
-              aria-hidden="true"
-            >
-              Paid
-            </div>
             <article className="rounded-[28px] border border-line bg-panel p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6">
               <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">
-                <span>Tonight’s desk</span>
-                <span className="text-mint">Paid post</span>
+                <span>{showingSamples ? 'Sample post' : 'Latest on the desk'}</span>
+                <span className="text-mint">Worth paying</span>
               </div>
               <div className="mt-5 rounded-2xl bg-cream px-5 py-5 text-ink">
                 <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/50">
                   <span>{featured.handle}</span>
-                  <span>{featured.ago}</span>
+                  <span>{timeAgo(featured.createdAt)}</span>
                 </div>
                 <p className="mt-4 text-sm leading-6 text-ink/80">{featured.text}</p>
               </div>
               <div className="mt-5 flex items-end justify-between gap-4">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Reward</p>
-                  <p className="mt-1 font-serif text-4xl text-cream">On review</p>
+                  <p className="nums mt-1 font-serif text-4xl text-cream">{formatSol(featured.reward) || 'On review'}</p>
                 </div>
-                <a href={featured.url} target="_blank" rel="noreferrer" className="btn-ghost px-4 py-2">
-                  Open post
-                </a>
+                {featured.url ? (
+                  <a href={featured.url} target="_blank" rel="noreferrer" className="btn-ghost px-4 py-2">
+                    Open post
+                  </a>
+                ) : null}
               </div>
             </article>
           </div>
         ) : null}
       </section>
 
-      <PayoutTape payouts={payouts} />
+      <PayoutTape tweets={tweets} />
 
       <section className="mx-auto max-w-7xl px-5 py-16">
         <div className="col-in flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-faint">On the board</p>
-            <h2 className="mt-3 font-serif text-4xl tracking-tight">Posts that got paid</h2>
+            <h2 className="mt-3 font-serif text-4xl tracking-tight">{showingSamples ? 'What a paid post looks like' : 'Posts worth paying'}</h2>
           </div>
           <Link to="/board" className="text-sm font-medium text-cream underline decoration-line underline-offset-4 hover:decoration-marigold">
             See every post
           </Link>
         </div>
+        {showingSamples ? <p className="mt-3 text-sm text-faint">These are samples. Real posts replace them once the first one is marked worth paying.</p> : null}
         <div className="cols mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {preview.map((tweet) => (
             <TweetCard key={tweet.id} tweet={tweet} />
@@ -125,10 +124,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-16">
+      <section className="mx-auto max-w-7xl px-5 pb-20">
         <div className="col-in">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-faint">How a tweet becomes a payout</p>
-          <h2 className="mt-3 max-w-xl font-serif text-4xl tracking-tight">The post is the contract surface</h2>
+          <h2 className="mt-3 max-w-xl font-serif text-4xl tracking-tight">From your post to SOL</h2>
         </div>
         <ol className="cols mt-8 grid gap-px overflow-hidden rounded-[28px] border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step) => (
@@ -139,35 +138,6 @@ export default function Home() {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-5 pb-20">
-        <div className="col-in flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-faint">Sample desk</p>
-            <h2 className="mt-3 font-serif text-4xl tracking-tight">A paid post reads like this</h2>
-          </div>
-          <Link to="/payouts" className="text-sm font-medium text-cream underline decoration-line underline-offset-4 hover:decoration-marigold">
-            Full desk
-          </Link>
-        </div>
-        <ul className="cols mt-8 divide-y divide-line border-y border-line">
-          {payouts.slice(0, 5).map((payout) => (
-            <li key={payout.id} className="flex flex-wrap items-baseline justify-between gap-3 py-4">
-              <div>
-                <p className="text-cream">
-                  <span className="font-medium">{payout.worker}</span>
-                  <span className="text-mute"> on {payout.gig}</span>
-                </p>
-                <p className="mt-1 text-sm text-faint">
-                  from {payout.client}, {payout.ago}
-                  {payout.local ? ', this browser' : ''}
-                </p>
-              </div>
-              <p className="font-serif text-2xl text-cream">On review</p>
-            </li>
-          ))}
-        </ul>
       </section>
     </>
   )

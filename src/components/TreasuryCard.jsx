@@ -5,7 +5,7 @@ import { useSolBalance } from '../solana/useSolBalance'
 export default function TreasuryCard({ compact = false }) {
   const balance = useSolBalance(TREASURY_ADDRESS)
   const label = formatBalance(balance)
-  const amount = label == null ? 'Reading…' : `${label} SOL`
+  const amount = balance === undefined ? 'Reading…' : label == null ? 'Unavailable' : `${label} SOL`
   const explorer = `https://solscan.io/account/${TREASURY_ADDRESS}`
 
   if (compact) {
@@ -32,7 +32,7 @@ export default function TreasuryCard({ compact = false }) {
         </a>
       </div>
       <p className="mt-3 max-w-xl text-sm leading-6 text-mute">
-        Treasury wallet on mainnet. This balance is what later pays an X user. The desk reads it here, and the payout record stays off-chain.
+        Treasury wallet on Solana mainnet. Posts marked worth paying are paid from this balance, which is read live here.
       </p>
     </article>
   )

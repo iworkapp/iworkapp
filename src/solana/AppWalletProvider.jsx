@@ -41,7 +41,6 @@ function PrivyAccountBridge({ children }) {
   }, [])
 
   useEffect(() => {
-    refreshWallets()
     window.addEventListener('phantom#initialized', refreshWallets)
     window.addEventListener('focus', refreshWallets)
     return () => {

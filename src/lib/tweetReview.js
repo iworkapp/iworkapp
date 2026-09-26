@@ -5,12 +5,13 @@ export function readStatus(url) {
     const parsed = new URL(String(url || '').trim())
     const host = parsed.hostname.replace(/^www\./, '')
     if (host !== 'x.com' && host !== 'twitter.com' && host !== 'mobile.twitter.com') return null
-    const match = parsed.pathname.match(/^\/([A-Za-z0-9_]{1,15})\/status\/(\d+)/)
+    const match = parsed.pathname.match(/^\/(?:i\/web|([A-Za-z0-9_]{1,15}))\/status\/(\d{1,20})(?:\/|$)/)
     if (!match) return null
+    const name = match[1] && match[1].toLowerCase() !== 'i' ? match[1] : ''
     return {
-      handle: `@${match[1]}`,
+      handle: name ? `@${name}` : '',
       id: match[2],
-      url: `https://x.com/${match[1]}/status/${match[2]}`,
+      url: name ? `https://x.com/${name}/status/${match[2]}` : `https://x.com/i/status/${match[2]}`,
     }
   } catch {
     return null
@@ -50,20 +51,24 @@ function botReason(text, words) {
   return ''
 }
 
-export function reviewTweet(text, url, existing) {
+export function reviewText(text, status, existing) {
   if (!TAG.test(text)) return { ok: false, reason: 'missing-tag' }
-  const status = readStatus(url)
-  if (!status) return { ok: false, reason: 'bad-link' }
   const words = wordsOf(text)
   const bot = botReason(text, words)
   if (bot) return { ok: false, reason: bot }
   const fingerprint = words.join(' ')
   for (const item of existing) {
-    const prior = readStatus(item.url)
-    if (prior && prior.id === status.id) return { ok: false, reason: 'duplicate' }
+    if (item.statusId && item.statusId === status.id) return { ok: false, reason: 'duplicate' }
     const other = wordsOf(item.text)
     if (other.join(' ') === fingerprint) return { ok: false, reason: 'duplicate' }
     if (similarity(words, other) >= 0.72) return { ok: false, reason: 'not-original' }
   }
   return { ok: true, status }
+}
+
+export function reviewTweet(text, url, existing) {
+  const status = readStatus(url)
+  if (!TAG.test(text)) return { ok: false, reason: 'missing-tag' }
+  if (!status) return { ok: false, reason: 'bad-link' }
+  return reviewText(text, status, existing)
 }

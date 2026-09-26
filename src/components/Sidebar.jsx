@@ -102,15 +102,14 @@ export default function Sidebar({ collapsed, onToggle }) {
               key={link.to}
               to={link.to}
               end={link.end}
-              title={collapsed ? (link.soon ? `${link.label}, coming soon` : link.label) : undefined}
+              title={collapsed ? link.label : undefined}
               className={({ isActive }) => linkClass(isActive, collapsed)}
             >
               {({ isActive }) => (
                 <>
                   <span className={isActive ? 'text-marigold' : ''}>{link.icon}</span>
-                  <span className={`inline-flex items-center gap-2 overflow-hidden whitespace-nowrap align-bottom transition-[max-width,opacity] duration-300 ease-out ${collapsed ? 'max-w-0 opacity-0' : link.soon ? 'max-w-52 opacity-100' : 'max-w-40 opacity-100'}`}>
+                  <span className={`inline-flex items-center gap-2 overflow-hidden whitespace-nowrap align-bottom transition-[max-width,opacity] duration-300 ease-out ${collapsed ? 'max-w-0 opacity-0' : 'max-w-40 opacity-100'}`}>
                     {link.label}
-                    {link.soon ? <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-marigold">Soon</span> : null}
                   </span>
                 </>
               )}

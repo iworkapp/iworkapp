@@ -1,14 +1,36 @@
 # iwork
 
-Tweet to get paid. A Solana board where a public post is the brief and SOL is the payout.
+Tweet to get paid. Post with `$iwork` on X, a dev reviews it and sets the SOL, and the payout comes from the treasury wallet on Solana.
+
+## Run locally
 
 ```bash
 npm install
-npm run dev
+cp .env.example .env
+npm run dev:api   # API on :8787
+npm run dev       # site on :5173, /api is proxied to the API
 ```
 
-Connect a Solana wallet through Privy, and link an X account from the same login. Set `VITE_PRIVY_APP_ID` in `.env` and restart the dev server. The wallet reads a mainnet balance. Tweet claims, review choices, and payouts are saved in this browser.
+## Production
 
-Tweet with `$iwork` at `/tweet`. A post that passes the desk check waits on watch. An admin marks it worth paying, keeps it on watch, or skips it. Worth paying is what shows on the public board.
+```bash
+npm run build
+npm start         # serves dist and /api on $PORT
+```
 
-The admin desk is at `/admin`. Copy `.env.example` to `.env`, set `VITE_ADMIN_KEY`, and restart the dev server. The key is checked in the browser, so it keeps the panel closed for other people using this machine. It is not a wallet password.
+Environment on the server:
+
+| Name | Purpose |
+| --- | --- |
+| `VITE_PRIVY_APP_ID` | Privy app for Link X. Needed at build time. |
+| `ADMIN_KEY` | Opens `/admin`. Checked by the server only. |
+| `X_BEARER_TOKEN` | Reads posts from X to check claims and find new `$iwork` posts. |
+| `X_POLL_MINUTES` | How often X is searched. Minimum 5, default 15. |
+| `DATA_DIR` | Where `board.json` lives. Point it at a persistent volume. |
+
+## How it works
+
+- `/tweet`: the author sends the X link and a Solana address. The server reads the post from X, runs the desk checks, and adds it to the watch queue.
+- The server also searches X for new `$iwork` posts. Those wait on watch until the author claims them with a wallet.
+- `/admin`: mark posts worth paying, watch, or skip. Set the SOL on review. After sending from the treasury, paste the transaction signature so the payout links to Solscan.
+- `/board` and `/payouts` show only posts marked worth paying.
