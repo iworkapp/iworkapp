@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import PayoutTape from '../components/PayoutTape.jsx'
 import TweetCard from '../components/TweetCard.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
-import { formatSol } from '../lib/format'
 import { usePageTitle } from '../lib/usePageTitle'
 
 const steps = [
@@ -24,7 +23,7 @@ const steps = [
   {
     n: '04',
     title: 'The SOL is recorded',
-    body: 'A post marked worth paying shows up here with the wallet that should be paid.',
+    body: 'A post marked worth paying shows up here. A dev sets the SOL on review.',
   },
 ]
 
@@ -33,8 +32,6 @@ export default function Home() {
   usePageTitle('')
   const featured = [...tweets].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))[0]
   const preview = [...tweets].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 3)
-  const paid = tweets.reduce((sum, tweet) => sum + Number(tweet.sol), 0)
-
   return (
     <>
       <section className="cols mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-14 lg:grid-cols-[1.15fr_0.85fr] lg:pt-20">
@@ -63,8 +60,8 @@ export default function Home() {
               <dd className="nums mt-2 font-serif text-3xl">{tweets.length}</dd>
             </div>
             <div>
-              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Paid</dt>
-              <dd className="nums mt-2 font-serif text-3xl">{formatSol(paid)}</dd>
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Reward</dt>
+              <dd className="mt-2 font-serif text-3xl">Open</dd>
             </div>
             <div>
               <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Receipts</dt>
@@ -95,10 +92,8 @@ export default function Home() {
               </div>
               <div className="mt-5 flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Paid</p>
-                  <p className="nums mt-1 font-serif text-4xl text-marigold">
-                    {formatSol(featured.sol)} <span className="text-2xl text-cream">SOL</span>
-                  </p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Reward</p>
+                  <p className="mt-1 font-serif text-4xl text-cream">On review</p>
                 </div>
                 <a href={featured.url} target="_blank" rel="noreferrer" className="btn-ghost px-4 py-2">
                   Open post
@@ -167,7 +162,7 @@ export default function Home() {
                   {payout.local ? ', this browser' : ''}
                 </p>
               </div>
-              <p className="nums font-serif text-2xl text-marigold">{formatSol(payout.sol)} SOL</p>
+              <p className="font-serif text-2xl text-cream">On review</p>
             </li>
           ))}
         </ul>

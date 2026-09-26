@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
-import { formatSol, shortenAddress, tweetUrl } from '../lib/format'
-import { TWEET_PAY } from '../lib/tweetReview'
+import { shortenAddress, tweetUrl } from '../lib/format'
 import { usePageTitle } from '../lib/usePageTitle'
 import { isSolanaAddress } from '../solana/address'
 import { useSolanaAccount } from '../solana/useSolanaAccount'
@@ -113,9 +112,9 @@ export default function Tweet() {
 
       <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
         <div className="rounded-[28px] border border-line bg-panel p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">This post pays</p>
-          <p className="nums mt-2 font-serif text-5xl text-marigold">{formatSol(TWEET_PAY)}</p>
-          <p className="text-sm text-faint">SOL when an admin marks it worth paying</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-faint">Reward</p>
+          <p className="mt-2 font-serif text-4xl text-cream">Set on review</p>
+          <p className="mt-2 text-sm text-faint">A dev sets the SOL after the post is marked worth paying.</p>
           <ul className="mt-6 space-y-4">
             {rules.map((rule) => (
               <li key={rule.title}>

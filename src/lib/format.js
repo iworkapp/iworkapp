@@ -1,12 +1,3 @@
-export function formatSol(value) {
-  const amount = Number(value)
-  if (!Number.isFinite(amount)) return '0.00'
-  return amount.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-}
-
 export function formatBalance(value) {
   if (value == null || !Number.isFinite(value)) return null
   return value.toLocaleString('en-US', { maximumFractionDigits: 3 })

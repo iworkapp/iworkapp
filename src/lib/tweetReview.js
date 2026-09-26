@@ -1,5 +1,3 @@
-export const TWEET_PAY = 0.25
-
 const TAG = /\$iwork\b/i
 
 export function readStatus(url) {

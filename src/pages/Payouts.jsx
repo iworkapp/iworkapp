@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
-import { formatSol, shortenAddress } from '../lib/format'
+import { shortenAddress } from '../lib/format'
 import { usePageTitle } from '../lib/usePageTitle'
 
 const filters = [
@@ -27,7 +27,7 @@ export default function Payouts() {
       <PageHeader
         kicker="Payouts"
         title="Who got paid"
-        lede="These are the posts an admin marked worth paying. A payout recorded here stays in this browser."
+        lede="These are the posts an admin marked worth paying. The SOL amount is set when a dev reviews the post."
       />
 
       <div className="col-in mt-8 flex flex-wrap gap-2">
@@ -65,7 +65,7 @@ export default function Payouts() {
                       {payout.local ? ', this browser' : ', sample'}
                     </span>
                   </span>
-                  <span className="nums shrink-0 font-serif text-2xl text-marigold">{formatSol(payout.sol)} SOL</span>
+                  <span className="shrink-0 font-serif text-2xl text-cream">On review</span>
                 </button>
                 {open ? (
                   <div className="mb-4 rounded-2xl border border-line bg-panel px-4 py-4 text-sm leading-6 text-mute">

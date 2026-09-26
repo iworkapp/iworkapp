@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { seedGigs, seedPayouts, seedTweets } from '../data'
-import { reviewTweet, TWEET_PAY } from '../lib/tweetReview'
+import { reviewTweet } from '../lib/tweetReview'
 
 const STORAGE_KEY = 'iwork.board.v1'
 const BoardContext = createContext(null)
@@ -188,7 +188,6 @@ export function BoardProvider({ children }) {
           text: input.text.trim(),
           url: review.status.url,
           address: input.address.trim(),
-          sol: TWEET_PAY,
           ago: 'just now',
           createdAt: Date.now(),
           local: true,
@@ -210,7 +209,6 @@ export function BoardProvider({ children }) {
             payouts = [
               {
                 id: crypto.randomUUID(),
-                sol: local.sol,
                 worker: local.handle,
                 client: '@iwork',
                 gig: 'Tweet with $iwork',

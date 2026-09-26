@@ -1,5 +1,3 @@
-import { formatSol } from '../lib/format'
-
 export default function PayoutTape({ payouts }) {
   if (!payouts.length) return null
   const items = [...payouts, ...payouts]
@@ -11,7 +9,7 @@ export default function PayoutTape({ payouts }) {
           {items.map((payout, index) => (
             <span key={`${payout.id}-${index}`} className="flex items-center gap-3 text-sm text-mute">
               <span className="text-cream">{payout.worker}</span>
-              <span className="nums font-medium text-marigold">{formatSol(payout.sol)} SOL</span>
+              <span className="font-medium text-marigold">on review</span>
               <span className="inline-block max-w-56 truncate align-bottom">{payout.gig}</span>
               <span className="text-mint">paid</span>
             </span>

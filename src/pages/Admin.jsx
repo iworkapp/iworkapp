@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
 import { useBoard } from '../context/BoardContext.jsx'
 import { adminKeyConfigured, lockAdmin, readAdminSession, unlockAdmin } from '../lib/admin'
-import { formatSol, shortenAddress } from '../lib/format'
+import { shortenAddress } from '../lib/format'
 import { usePageTitle } from '../lib/usePageTitle'
 
 export default function Admin() {
@@ -139,7 +139,7 @@ function Desk({ onLock }) {
                     {tweet.local ? ', this browser' : ', sample'}
                   </p>
                 </div>
-                <span className="nums shrink-0 font-serif text-2xl text-marigold">{formatSol(tweet.sol)} SOL</span>
+                <span className="shrink-0 font-serif text-xl text-cream">On review</span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {choices.map((choice) => (
